@@ -104,4 +104,7 @@ def my_faculty():
 
 if __name__ == "__main__":
     login()
+    my_profile()
     results()
+    my_courses()
+    my_faculty()
