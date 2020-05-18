@@ -5,8 +5,10 @@ import bs4
 URL_HOME = "https://student.amizone.net/Home"
 URL = "https://student.amizone.net/"
 URL_LOGIN = "https://student.amizone.net/Login/Login"
-username="your username"
-password="your password"
+
+#Enter your credentials here
+username=""
+password=""
 
 class Cookies:
     def __init__(self):
@@ -41,10 +43,13 @@ r.headers.update({"Referer": URL})
 c = Cookies()
 
 def login():
-    c.loadCookie()
-    if (r.get(URL_HOME).url == URL):
-        c.login(username,password)
-    r.cookies = c.cookies
+    try:
+        c.loadCookie()
+    except:
+        if (r.get(URL_HOME).url == URL):
+            c.login(username,password)
+    finally:
+        r.cookies = c.cookies
 
 def my_profile():
     a = r.get("https://student.amizone.net/Electives/NewCourseCoding?X-Requested-With=XMLHttpRequest")
