@@ -2,8 +2,9 @@
 This is the unofficial api for amizone.net, which can be used for various applications.
 
 ## Features:
-* My Profile
-* Attendance/My courses
-* My Faculty
-* Examination result(Cgpa/Sgpa)
-* Time Table(to be added soon)
+* My Profile Page
+* My courses Page
+* My Faculty Page
+* Examination Results page
+* Time Table (To be added soon)
+* Exam Schedule (To be added soon)
