@@ -1,28 +1,15 @@
-import pickle
 import requests
 import bs4
 
-URL_HOME = "https://student.amizone.net/Home"
-URL = "https://student.amizone.net/"
-URL_LOGIN = "https://student.amizone.net/Login/Login"
-
-#Enter your credentials here
-username=""
-password=""
+URL_HOME    = "https://student.amizone.net/Home"
+URL         = "https://student.amizone.net/"
+URL_LOGIN   = "https://student.amizone.net/Login/Login"
+username    = "Your id"
+password    = "Your password"
 
 class Cookies:
-    def __init__(self):
-        self.filename = "cookies"
-        self.cookies = None
-
     def saveCookie(self,requestsCookieJar):
-        with open("./"+self.filename,'wb') as f:
-            pickle.dump(requestsCookieJar,f)
         self.cookies=requestsCookieJar
-
-    def loadCookie(self):
-        with open("./"+self.filename,'rb') as f:
-            self.cookies = pickle.load(f)
 
     def login(self,user,pwd):
         s= requests.Session()
@@ -42,14 +29,9 @@ r = requests.Session()
 r.headers.update({"Referer": URL})
 c = Cookies()
 
-def login():
-    try:
-        c.loadCookie()
-    except:
-        if (r.get(URL_HOME).url == URL):
-            c.login(username,password)
-    finally:
-        r.cookies = c.cookies
+def login(usr,pwd):
+    c.login(usr,pwd)
+    r.cookies = c.cookies
 
 def my_profile():
     a = r.get("https://student.amizone.net/Electives/NewCourseCoding?X-Requested-With=XMLHttpRequest")
@@ -67,20 +49,22 @@ def my_profile():
     print(programme)
     print(sem)
     print(passyear)
+    print("Image URL: "+img)
 
 def my_courses():
     a = r.get("https://student.amizone.net/Academics/MyCourses?X-Requested-With=XMLHttpRequest")
     b = bs4.BeautifulSoup(a.content, 'html.parser')
-    courseId = [c.button.get('onclick').split("'")[1].strip() for c in b.find_all(attrs={"data-title": "Attendance"})]
+    courseId   = [c.button.get('onclick').split("'")[1].strip() for c in b.find_all(attrs={"data-title": "Attendance"})]
     courseCode = [c.text.strip() for c in b.find_all(attrs={'data-title': "Course Code"})]
     courseName = [c.text.strip() for c in b.find_all(attrs={'data-title': "Course Name"})]
     attendance = [c.text.strip() for c in b.find_all(attrs={'data-title': "Attendance"})]
+    syllabus   = [c.decode_contents() for c in b.find_all(attrs={'data-title': "Course Syllabus"})]
+    # this returned a list(string) of anchor tags so the below code is to extract href from it
+    syllabus   = [i[i.find('"')+1:i.find('"',i.find('"')+1)] for i in syllabus]
 
-    print("Course code     Course name                                                  Attendance")
+    print("Course code     Course name"+" "*50+"Attendance      Syllabus Download Url")
     for i in range(len(courseCode)):
-        print("{:15s} {:60s} {:10s}".format(courseCode[i], courseName[i], attendance[i]))
-    return (courseId)
-
+        print("{:15s} {:60s} {:15s} {}".format(courseCode[i], courseName[i], attendance[i], syllabus[i]))
 
 def results():
     a=r.get("https://student.amizone.net/Examination/Examination?X-Requested-With=XMLHttpRequest")
@@ -97,14 +81,17 @@ def my_faculty():
     faculties=[x.text.strip() for x in b.find_all(attrs={"class":"faculty-name"})]
     subjects=[x.text.strip() for x in b.find_all(attrs={"class":"subject"})]
     images=[x["src"] for x in b.find_all(attrs={"class":"img-responsive"})]
-    print("Subjects                                                          Faculties            Image Url")
+    print("Subjects"+" "*68+"Faculties"+" "*22+"Image Url")
     for i in range(len(subjects)):
-         print("{:65s} {:20s} {}".format(subjects[i],faculties[i],images[i]))
+         print("{:75s} {:30s} {}".format(subjects[i],faculties[i],images[i]))
 
 
 if __name__ == "__main__":
-    login()
+    login(username,password)
     my_profile()
-    results()
+    print()
     my_courses()
+    print()
     my_faculty()
+    print()
+    results()
