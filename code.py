@@ -71,13 +71,16 @@ def results():
     courseTitle = [c.text.strip() for c in b.find_all(attrs={'data-title': "Course Title"})]
     GradeObtained = [c.text.strip() for c in b.find_all(attrs={'data-title': "Go"})]
     GradePoint=[c.text.strip() for c in b.find_all(attrs={'data-title': "GP"})]
-    print("S.no.  Course code     Course Title"+" "*49+"Go   GP")
-    for i in range(len(courseCode)):
-        print("{}      {:15s} {:60s} {:4s} {:2s}".format(i+1,courseCode[i],courseTitle[i],GradeObtained[i],GradePoint[i]))
-    print()
 
     sgpa=[x.text.strip() for x in b.find_all(attrs={'data-title': "SGPA"})]
     cgpa=[x.text.strip() for x in b.find_all(attrs={'data-title': "CGPA"})]
+
+    print("Result of sem "+str(len(sgpa))+":")
+    print("S.no.  Course code     Course Title" + " " * 49 + "Go   GP")
+    for i in range(len(courseCode)):
+        print("{}      {:15s} {:60s} {:4s} {:2s}".format(i + 1, courseCode[i], courseTitle[i], GradeObtained[i],GradePoint[i]))
+    print()
+
     print("Combined result:")
     print("Semester SGPA CGPA")
     for i in range(len(sgpa)):
