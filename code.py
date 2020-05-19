@@ -53,7 +53,6 @@ def my_profile():
 def my_courses():
     a = r.get("https://student.amizone.net/Academics/MyCourses?X-Requested-With=XMLHttpRequest")
     b = bs4.BeautifulSoup(a.content, 'html.parser')
-    courseId   = [c.button.get('onclick').split("'")[1].strip() for c in b.find_all(attrs={"data-title": "Attendance"})]
     courseCode = [c.text.strip() for c in b.find_all(attrs={'data-title': "Course Code"})]
     courseName = [c.text.strip() for c in b.find_all(attrs={'data-title': "Course Name"})]
     attendance = [c.text.strip() for c in b.find_all(attrs={'data-title': "Attendance"})]
@@ -68,8 +67,18 @@ def my_courses():
 def results():
     a=r.get("https://student.amizone.net/Examination/Examination?X-Requested-With=XMLHttpRequest")
     b = bs4.BeautifulSoup(a.content, 'html.parser')
+    courseCode = [c.text.strip() for c in b.find_all(attrs={'data-title': "Course Code"})]
+    courseTitle = [c.text.strip() for c in b.find_all(attrs={'data-title': "Course Title"})]
+    GradeObtained = [c.text.strip() for c in b.find_all(attrs={'data-title': "Go"})]
+    GradePoint=[c.text.strip() for c in b.find_all(attrs={'data-title': "GP"})]
+    print("S.no.  Course code     Course Title"+" "*49+"Go   GP")
+    for i in range(len(courseCode)):
+        print("{}      {:15s} {:60s} {:4s} {:2s}".format(i+1,courseCode[i],courseTitle[i],GradeObtained[i],GradePoint[i]))
+    print()
+
     sgpa=[x.text.strip() for x in b.find_all(attrs={'data-title': "SGPA"})]
     cgpa=[x.text.strip() for x in b.find_all(attrs={'data-title': "CGPA"})]
+    print("Combined result:")
     print("Semester SGPA CGPA")
     for i in range(len(sgpa)):
         print("{}        {:4} {:4}".format(i+1,sgpa[i],cgpa[i]))
@@ -83,7 +92,6 @@ def my_faculty():
     print("Subjects"+" "*68+"Faculties"+" "*22+"Image Url")
     for i in range(len(subjects)):
          print("{:75s} {:30s} {}".format(subjects[i],faculties[i],images[i]))
-
 
 if __name__ == "__main__":
     login(username,password)
