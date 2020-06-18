@@ -95,6 +95,17 @@ def my_faculty():
     print("Subjects"+" "*68+"Faculties"+" "*22+"Image Url")
     for i in range(len(subjects)):
          print("{:75s} {:30s} {}".format(subjects[i],faculties[i],images[i]))
+           
+def exam_schedule():
+    a=r.get('https://student.amizone.net/Examination/ExamSchedule?X-Requested-With=XMLHttpRequest')
+    b = bs4.BeautifulSoup(a.content, 'html.parser')
+    courseCode = [c.text.strip() for c in b.find_all(attrs={'data-title': "Course Code"})]
+    courseTitle = [c.text.strip() for c in b.find_all(attrs={'data-title': "Course Title"})]
+    ExamDate = [c.text.strip() for c in b.find_all(attrs={'data-title': "Exam Date"})]
+    Time = [c.text.strip() for c in b.find_all(attrs={'data-title': "Time"})]
+    print("CourseCode  "+"Course Title"+" "*49+"Exam Date  "+"Time")
+    for i in range(len(courseCode)):
+         print("{:11s} {:60s} {:10} {}".format(courseCode[i],courseTitle[i],ExamDate[i],Time[i]))
 
 if __name__ == "__main__":
     login(username,password)
@@ -105,3 +116,5 @@ if __name__ == "__main__":
     my_faculty()
     print()
     results()
+    print()
+    exam_schedule()
