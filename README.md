@@ -7,5 +7,5 @@ This is the unofficial api for amizone.net, which can be used for various applic
 * My Faculty Page
 * Examination Results page
 * Exam Schedule
-* Time Table (To be added soon)
+* Time Table 
 
