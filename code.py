@@ -106,6 +106,18 @@ def exam_schedule():
     print("CourseCode  "+"Course Title"+" "*49+"Exam Date  "+"Time")
     for i in range(len(courseCode)):
          print("{:11s} {:60s} {:10} {}".format(courseCode[i],courseTitle[i],ExamDate[i],Time[i]))
+            
+def timetable():
+    a=r.get("https://student.amizone.net/TimeTable/Home?X-Requested-With=XMLHttpRequest")
+    b = bs4.BeautifulSoup(a.content, 'html.parser')
+    courseCode = [x.text.strip() for x in b.find_all(attrs={"class":"course-code"})]
+    courseTeacher = [c.text.strip() for c in b.find_all(attrs={'class': "course-teacher"})]
+    classLocation = [x.text.strip() for x in b.find_all(attrs={"class":"class-loc"})]
+    Time = [x.text.strip() for x in b.find_all(attrs={"class": "class-time"})]
+    print("CourseCode "+" CourseTeacher"+" "*40+"ClassLocation "+"   Time")
+    for i in range(len(courseCode)):
+         print("{:12s}{:55s}{:10s}{}".format(courseCode[i],courseTeacher[i],classLocation[i],Time[i]))
+
 
 if __name__ == "__main__":
     login(username,password)
@@ -118,3 +130,5 @@ if __name__ == "__main__":
     results()
     print()
     exam_schedule()
+    print()
+    timetable()
