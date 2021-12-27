@@ -1,12 +1,17 @@
 from fastapi import FastAPI, Header, Form
+from starlette.responses import RedirectResponse
 from typing import Optional
 from models import *
 from utils import AMIZONE
 
 app = FastAPI(
     title='Amizone API',
-    description='Amizone REST API, by: Akshansh Kumar',
+    description="REST API for Amity\'s student portal: [Amizone](https://amizone.net/) </br> Made with love by: [Akshansh Kumar](https://github.com/akshanshkmr)💟",
     version='2.0')
+
+@app.get("/", tags=["Metadata"])
+async def root():
+    return RedirectResponse(url='/docs')
 
 @app.post("/login", tags=["Post"], response_model=LoginResponse)
 async def login(username: str = Form(...), password: str = Form(...)):
