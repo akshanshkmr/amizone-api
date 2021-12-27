@@ -4,3 +4,4 @@ uvicorn
 typing
 pydantic
 bs4
+python-multipart
