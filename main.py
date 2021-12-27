@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Header, Form
+from fastapi import FastAPI, Header, Form, HTTPException
 from starlette.responses import RedirectResponse
 from typing import Optional
 from models import *
@@ -17,6 +17,8 @@ async def root():
 async def login(username: str = Form(...), password: str = Form(...)):
     client = AMIZONE()
     cookie = client.login(username, password)
+    if '.ASPXAUTH' not in cookie.keys():
+        raise HTTPException(status_code=401, detail="Invalid username or password")
     return {'session_cookie':cookie}
 
 @app.get("/profile", tags=["Get"], response_model=ProfileResponse)
