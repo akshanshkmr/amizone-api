@@ -1,0 +1,6 @@
+fastapi
+requests
+uvicorn
+typing
+pydantic
+bs4
