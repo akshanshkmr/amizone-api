@@ -82,8 +82,6 @@ class AMIZONE:
         except:
             raise HTTPException(status_code=401, detail="Invalid or Expired cookie")
         else:
-            if not len(courseCode):
-                raise HTTPException(status_code=404, detail="Semester not found")
             return {
                 'course_code':courseCode,
                 'course_name':courseName,
@@ -109,8 +107,6 @@ class AMIZONE:
         except:
             raise HTTPException(status_code=401, detail="Invalid or Expired cookie")
         else:
-            if not len(courseCode):
-                raise HTTPException(status_code=404, detail="Semester not found")
             return {
                 "sem_result":{
                     "course_code":courseCode,
