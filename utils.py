@@ -72,6 +72,13 @@ class AMIZONE:
             syllabus   = [c.decode_contents() for c in b.find_all(attrs={'data-title': "Course Syllabus"})]
             # this returned a list(string) of anchor tags so the below code is to extract href from it
             syllabus   = [i[i.find('"')+1:i.find('"',i.find('"')+1)] for i in syllabus]
+            percentage=[]
+            for i in attendance:
+                try:
+                    x=float(i[i.find("(")+1:i.find(")")])
+                    percentage.append(x)
+                except:
+                    percentage.append(100.0)
         except:
             raise HTTPException(status_code=401, detail="Invalid or Expired cookie")
         else:
@@ -81,6 +88,7 @@ class AMIZONE:
                 'course_code':courseCode,
                 'course_name':courseName,
                 'attendance':attendance,
+                'attendance_pct':percentage,
                 'syllabus':syllabus,
             }
     

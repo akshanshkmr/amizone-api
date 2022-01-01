@@ -15,6 +15,7 @@ class CourseResponse(BaseModel):
     course_name: list[str]
     attendance: list[str]
     syllabus: list[str]
+    attendance_pct: list[float]
 
 class ResultResponse(BaseModel):
     sem_result: dict
