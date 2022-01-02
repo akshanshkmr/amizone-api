@@ -101,9 +101,10 @@ class AMIZONE:
             courseTitle = [c.text.strip() for c in b.find_all(attrs={'data-title': "Course Title"})]
             GradeObtained = [c.text.strip() for c in b.find_all(attrs={'data-title': "Go"})]
             GradePoint=[c.text.strip() for c in b.find_all(attrs={'data-title': "GP"})]
-
-            sgpa=[x.text.strip() for x in b.find_all(attrs={'data-title': "SGPA"})]
+            sgpa=[float(x.text.strip()) for x in b.find_all(attrs={'data-title': "SGPA"})]
             cgpa=[x.text.strip() for x in b.find_all(attrs={'data-title': "CGPA"})]
+            cgpa[0] = sgpa[0]
+            cgpa=[float(x) for x in cgpa]
         except:
             raise HTTPException(status_code=401, detail="Invalid or Expired cookie")
         else:
