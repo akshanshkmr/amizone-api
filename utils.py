@@ -175,12 +175,13 @@ class AMIZONE:
 
     def sem_count(self):
         try:
-            a = self.session.get("https://student.amizone.net/Examination/Examination")
+            a = self.session.get("https://student.amizone.net/Electives/NewCourseCoding")
             b = bs4.BeautifulSoup(a.content, 'html.parser')
-            sgpa=[x.text.strip() for x in b.find_all(attrs={'data-title': "SGPA"})]
+            row = [x.text for x in b.find_all("div", attrs={"class": "col-md-2"})]
+            sem = row[1].split(': ')[1].strip()
         except:
             raise HTTPException(status_code=401, detail="Invalid or Expired cookie")
         else:
             return {
-                "sem_count":len(sgpa)
+                'sem_count':sem,
             }
