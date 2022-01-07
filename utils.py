@@ -1,7 +1,9 @@
 import requests
 import bs4
 import json
-from fastapi import HTTPException
+from fastapi                import HTTPException
+from datetime               import datetime
+from dateutil.relativedelta import *
 
 class AMIZONE:
     def __init__(self, session_cookie=None):
@@ -156,22 +158,37 @@ class AMIZONE:
                 'exam_time':Time
             }
     
-    def timetable(self):
+    def timetable(self, date=datetime.now().strftime("%Y-%m-%d")):
+        timestamp = round(datetime.now().timestamp()*1000)
+        start = datetime.strptime(date, "%Y-%m-%d")
+        end = (start + relativedelta(days=+1)).strftime("%Y-%m-%d")
+        print(end)
         try:
-            a = self.session.get("https://student.amizone.net/TimeTable/Home")
-            b = bs4.BeautifulSoup(a.content, 'html.parser')
-            courseCode = [x.text.strip() for x in b.find_all(attrs={"class":"course-code"})]
-            courseTeacher = [c.text.strip() for c in b.find_all(attrs={'class': "course-teacher"})]
-            classLocation = [x.text.strip() for x in b.find_all(attrs={"class":"class-loc"})]
-            Time = [x.text.strip() for x in b.find_all(attrs={"class": "class-time"})]
+            res = self.session.get("https://s.amizone.net/Calendar/home/GetDiaryEvents?start={0}&end={1}&_={2}".format(date, end, timestamp))
+            res_json = json.loads(res.content)
+            courseCode = [i['CourseCode'] for i in res_json]
+            courseTitle = [i['title'] for i in res_json]
+            courseTeacher = [i['FacultyName'].split('[')[0] for i in res_json]
+            classLocation = [i['RoomNo'] for i in res_json]
+            Time = [i['start'].split(' ')[1].replace(':00','') + '-' + i['end'].split(' ')[1].replace(':00','') for i in res_json]
+            Attendance = []
+            for i in res_json:
+                if i['AttndColor'] == '#4FCC4F':
+                    Attendance.append(1)
+                elif i['AttndColor'] == '#f00':
+                    Attendance.append(-1)
+                elif i['AttndColor'] == '#3a87ad':
+                    Attendance.append(0)
         except:
             raise HTTPException(status_code=401, detail="Invalid or Expired cookie")
         else:
             return {
                 'course_code':courseCode,
+                'course_title':courseTitle,
                 'course_teacher':courseTeacher,
                 'class_location':classLocation,
-                'class_time':Time
+                'class_time':Time,
+                'attendance':Attendance
             }
 
     def sem_count(self):

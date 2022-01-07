@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Header, Form, HTTPException
 from starlette.responses import RedirectResponse
+from datetime import datetime
 from typing import Optional
 from models import *
 from utils import AMIZONE
@@ -52,9 +53,9 @@ async def exam_schedule(session_cookie: Optional[str] = Header(...)):
     return exam_schedule
 
 @app.get("/timetable", tags=["Get"], response_model=TimeTableResponse)
-async def timetable(session_cookie: Optional[str] = Header(...)):
+async def timetable(session_cookie: Optional[str] = Header(...), date: Optional[str] = datetime.now().strftime("%Y-%m-%d")):
     client = AMIZONE(session_cookie)
-    timetable = client.timetable()
+    timetable = client.timetable(date)
     return timetable
 
 @app.get("/sem_count", tags=["Metadata"], response_model=SemCountResponse)

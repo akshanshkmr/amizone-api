@@ -34,9 +34,11 @@ class ExamScheduleResponse(BaseModel):
 
 class TimeTableResponse(BaseModel):
     course_code: list[str]
+    course_title: list[str]
     course_teacher: list[str]
     class_location: list[str]
     class_time: list[str]
+    attendance: list[int]
 
 class SemCountResponse(BaseModel):
     sem_count: int
