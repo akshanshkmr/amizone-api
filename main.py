@@ -63,3 +63,9 @@ async def sem_count(session_cookie: Optional[str] = Header(...)):
     client = AMIZONE(session_cookie)
     sem_count = client.sem_count()
     return sem_count
+
+@app.get("/cookie_status", tags=["Metadata"], response_model=cookieStatusResponse)
+async def sem_count(session_cookie: Optional[str] = Header(...)):
+    client = AMIZONE(session_cookie)
+    cookie_status = client.cookie_status()
+    return cookie_status

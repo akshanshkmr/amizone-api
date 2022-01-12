@@ -42,3 +42,6 @@ class TimeTableResponse(BaseModel):
 
 class SemCountResponse(BaseModel):
     sem_count: int
+
+class cookieStatusResponse(BaseModel):
+    cookie_status: str

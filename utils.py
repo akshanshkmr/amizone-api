@@ -193,13 +193,24 @@ class AMIZONE:
 
     def sem_count(self):
         try:
-            a = self.session.get("https://student.amizone.net/Electives/NewCourseCoding")
+            a = self.session.get("https://student.amizone.net/Academics/MyCourses")
             b = bs4.BeautifulSoup(a.content, 'html.parser')
-            row = [x.text for x in b.find_all("div", attrs={"class": "col-md-2"})]
-            sem = row[1].split(': ')[1].strip()
+            sem = b.find('option', selected=True).text.strip()
         except:
             raise HTTPException(status_code=401, detail="Invalid or Expired cookie")
         else:
             return {
-                'sem_count':sem,
+                'sem_count':sem
+            }
+    
+    def cookie_status(self):
+        try:
+            a = self.session.get("https://student.amizone.net/Academics/MyCourses")
+            b = bs4.BeautifulSoup(a.content, 'html.parser')
+            b.find('option', selected=True).text.strip()
+        except:
+            raise HTTPException(status_code=401, detail="Invalid or Expired cookie")
+        else:
+            return {
+                'cookie_status':'valid',
             }
