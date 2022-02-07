@@ -159,18 +159,18 @@ class AMIZONE:
             }
     
     def timetable(self, date=datetime.now().strftime("%Y-%m-%d")):
+        import re
         timestamp = round(datetime.now().timestamp()*1000)
         start = datetime.strptime(date, "%Y-%m-%d")
-        end = (start + relativedelta(days=+1)).strftime("%Y-%m-%d")
-        print(end)
+        end = start
         try:
             res = self.session.get("https://s.amizone.net/Calendar/home/GetDiaryEvents?start={0}&end={1}&_={2}".format(date, end, timestamp))
             res_json = json.loads(res.content)
             courseCode = [i['CourseCode'] for i in res_json]
             courseTitle = [i['title'] for i in res_json]
-            courseTeacher = [i['FacultyName'].split('[')[0] for i in res_json]
+            courseTeacher = [re.sub('&lt;/?[a-z]+&gt;', '', i['FacultyName'].split('[')[0]) for i in res_json]
             classLocation = [i['RoomNo'] for i in res_json]
-            Time = [i['start'].split(' ')[1].replace(':00','') + '-' + i['end'].split(' ')[1].replace(':00','') for i in res_json]
+            Time = [i['start'].split(' ')[1].replace(':00','') + ' - ' + i['end'].split(' ')[1].replace(':00','') for i in res_json]
             Attendance = []
             for i in res_json:
                 if i['AttndColor'] == '#4FCC4F':
