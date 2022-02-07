@@ -1,9 +1,9 @@
 import requests
 import bs4
 import json
+import re
 from fastapi                import HTTPException
 from datetime               import datetime
-from dateutil.relativedelta import *
 
 class AMIZONE:
     def __init__(self, session_cookie=None):
@@ -159,7 +159,6 @@ class AMIZONE:
             }
     
     def timetable(self, date=datetime.now().strftime("%Y-%m-%d")):
-        import re
         timestamp = round(datetime.now().timestamp()*1000)
         start = datetime.strptime(date, "%Y-%m-%d")
         end = start
