@@ -169,7 +169,7 @@ class AMIZONE:
             courseTitle = [i['title'] for i in res_json]
             courseTeacher = [re.sub('&lt;/?[a-z]+&gt;', '', i['FacultyName'].split('[')[0]) for i in res_json]
             classLocation = [i['RoomNo'] for i in res_json]
-            Time = [i['start'].split(' ')[1].replace(':00','') + ' - ' + i['end'].split(' ')[1].replace(':00','') for i in res_json]
+            Time = [datetime.strptime(i['start'],'%Y/%m/%d %I:%M:%S %p').strftime('%H:%M') + ' - ' + datetime.strptime(i['end'],'%Y/%m/%d %I:%M:%S %p').strftime('%H:%M') for i in res_json]
             Attendance = []
             for i in res_json:
                 if i['AttndColor'] == '#4FCC4F':
@@ -181,14 +181,16 @@ class AMIZONE:
         except:
             raise HTTPException(status_code=401, detail="Invalid or Expired cookie")
         else:
-            return {
-                'course_code':courseCode,
-                'course_title':courseTitle,
-                'course_teacher':courseTeacher,
-                'class_location':classLocation,
-                'class_time':Time,
-                'attendance':Attendance
+            timeTableData = {'course_code':courseCode,'course_title':courseTitle,'course_teacher':courseTeacher,'class_location':classLocation,'class_time':Time,'attendance':Attendance}
+            sortedTimeTableData = {
+                'course_code':[timeTableData['course_code'][timeTableData['class_time'].index(i)] for i in sorted(timeTableData['class_time'])],
+                'course_title':[timeTableData['course_title'][timeTableData['class_time'].index(i)] for i in sorted(timeTableData['class_time'])],
+                'course_teacher':[timeTableData['course_teacher'][timeTableData['class_time'].index(i)] for i in sorted(timeTableData['class_time'])],
+                'class_location':[timeTableData['class_location'][timeTableData['class_time'].index(i)] for i in sorted(timeTableData['class_time'])],
+                'class_time':sorted(timeTableData['class_time']),
+                'attendance':[timeTableData['attendance'][timeTableData['class_time'].index(i)] for i in sorted(timeTableData['class_time'])]
             }
+            return sortedTimeTableData
 
     def sem_count(self):
         try:
