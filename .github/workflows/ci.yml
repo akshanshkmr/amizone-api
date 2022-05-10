@@ -45,3 +45,10 @@ jobs:
         label: Build
         message: ${{ env.FAILED == 'null' && 'Passing' || 'Failing' }}
         color: ${{ env.FAILED == 'null' && 'green' || 'red' }}
+    - name: Deploy To Heroku
+      - uses: actions/checkout@v2
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "amizone-apiv2"
+          heroku_email: "akshanshkmr821@gmail.com"
