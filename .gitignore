@@ -1,0 +1,7 @@
+__pycache__
+.pytest_cache
+htmlcov
+.coverage
+coverage.json
+.report.json
+amizone.py

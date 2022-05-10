@@ -41,7 +41,7 @@ class AMIZONE:
     
     def my_profile(self):
         try:
-            a = self.session.get("https://student.amizone.net/Electives/NewCourseCoding")
+            a = self.session.get("https://s.amizone.net/Electives/NewCourseCoding")
             b = bs4.BeautifulSoup(a.content, 'html.parser')
             row1=[x.text for x in b.find_all("div",attrs={"class":"col-md-3"})]
             row2 = [x.text for x in b.find_all("div", attrs={"class": "col-md-2"})]
@@ -66,7 +66,7 @@ class AMIZONE:
             if sem:
                 a = self.session.post("https://s.amizone.net/Academics/MyCourses/CourseListSemWise", data= {'sem':sem})
             else:
-                a = self.session.get("https://student.amizone.net/Academics/MyCourses")
+                a = self.session.get("https://s.amizone.net/Academics/MyCourses")
             b = bs4.BeautifulSoup(a.content, 'html.parser')
             courseCode = [c.text.strip() for c in b.find_all(attrs={'data-title': "Course Code"})]
             courseName = [c.text.strip() for c in b.find_all(attrs={'data-title': "Course Name"})]
@@ -97,7 +97,7 @@ class AMIZONE:
             if sem:
                 a = self.session.post("https://s.amizone.net/Examination/Examination/ExaminationListSemWise", data= {'sem':sem})
             else:
-                a = self.session.get("https://student.amizone.net/Examination/Examination")
+                a = self.session.get("https://s.amizone.net/Examination/Examination")
             b = bs4.BeautifulSoup(a.content, 'html.parser')
             courseCode = [c.text.strip() for c in b.find_all(attrs={'data-title': "Course Code"})]
             courseTitle = [c.text.strip() for c in b.find_all(attrs={'data-title': "Course Title"})]
@@ -126,7 +126,7 @@ class AMIZONE:
     
     def my_faculty(self):
         try:
-            a = self.session.get("https://student.amizone.net/FacultyFeeback/FacultyFeedback")
+            a = self.session.get("https://s.amizone.net/FacultyFeeback/FacultyFeedback")
             b = bs4.BeautifulSoup(a.content, 'html.parser')
             faculties=[x.text.strip() for x in b.find_all(attrs={"class":"faculty-name"})]
             subjects=[x.text.strip() for x in b.find_all(attrs={"class":"subject"})]
@@ -142,7 +142,7 @@ class AMIZONE:
     
     def exam_schedule(self):
         try:
-            a = self.session.get('https://student.amizone.net/Examination/ExamSchedule')
+            a = self.session.get('https://s.amizone.net/Examination/ExamSchedule')
             b = bs4.BeautifulSoup(a.content, 'html.parser')
             courseCode = [c.text.strip() for c in b.find_all(attrs={'data-title': "Course Code"})]
             courseTitle = [c.text.strip() for c in b.find_all(attrs={'data-title': "Course Title"})]
@@ -165,10 +165,10 @@ class AMIZONE:
         try:
             res = self.session.get("https://s.amizone.net/Calendar/home/GetDiaryEvents?start={0}&end={1}&_={2}".format(date, end, timestamp))
             res_json = json.loads(res.content)
-            courseCode = [i['CourseCode'] for i in res_json]
-            courseTitle = [i['title'] for i in res_json]
-            courseTeacher = [re.sub('&lt;/?[a-z]+&gt;', '', i['FacultyName'].split('[')[0]) for i in res_json]
-            classLocation = [i['RoomNo'] for i in res_json]
+            courseCode = [i['CourseCode'].strip() for i in res_json]
+            courseTitle = [i['title'].strip() for i in res_json]
+            courseTeacher = [re.sub('&lt;/?[a-z]+&gt;', '', i['FacultyName'].split('[')[0]).strip() for i in res_json]
+            classLocation = [i['RoomNo'].strip() for i in res_json]
             Time = [datetime.strptime(i['start'],'%Y/%m/%d %I:%M:%S %p').strftime('%H:%M') + ' - ' + datetime.strptime(i['end'],'%Y/%m/%d %I:%M:%S %p').strftime('%H:%M') for i in res_json]
             Attendance = []
             for i in res_json:
@@ -194,7 +194,7 @@ class AMIZONE:
 
     def sem_count(self):
         try:
-            a = self.session.get("https://student.amizone.net/Academics/MyCourses")
+            a = self.session.get("https://s.amizone.net/Academics/MyCourses")
             b = bs4.BeautifulSoup(a.content, 'html.parser')
             sem = b.find('option', selected=True).text.strip()
         except:
@@ -206,7 +206,7 @@ class AMIZONE:
     
     def cookie_status(self):
         try:
-            a = self.session.get("https://student.amizone.net/Academics/MyCourses")
+            a = self.session.get("https://s.amizone.net/Academics/MyCourses")
             b = bs4.BeautifulSoup(a.content, 'html.parser')
             b.find('option', selected=True).text.strip()
         except:

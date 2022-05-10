@@ -1,0 +1,47 @@
+name: Amizone API
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Test with pytest
+      run: |
+        pip install pytest
+        pip install coverage
+        pip install pytest-json-report
+        coverage run -m pytest tests.py --json-report
+        coverage json
+        echo "COVERAGE=$(jq '.totals.percent_covered' coverage.json)" >> $GITHUB_ENV
+        echo "FAILED=$(jq '.summary.failed' .report.json)" >> $GITHUB_ENV
+    - name: Update Coverage Badge
+      if: always()
+      uses: schneegans/dynamic-badges-action@v1.0.0
+      with:
+        auth: ${{ secrets.GIST_SECRET }}
+        gistID: 866fa104d7f38f068a1e127ab7ae8150
+        filename: amizone_api_cov.json
+        label: Coverage (%)
+        message: ${{ env.COVERAGE }}
+        namedLogo: pytest
+    - name: Update Build Badge
+      if: always()
+      uses: schneegans/dynamic-badges-action@v1.0.0
+      with:
+        auth: ${{ secrets.GIST_SECRET }}
+        gistID: 866fa104d7f38f068a1e127ab7ae8150
+        filename: amizone_api_results.json
+        label: Build
+        message: ${{ env.FAILED == 'null' && 'Passing' || 'Failing' }}
+        color: ${{ env.FAILED == 'null' && 'green' || 'red' }}
