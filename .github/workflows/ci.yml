@@ -56,3 +56,8 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "amizone-apiv2"
           heroku_email: "akshanshkmr821@gmail.com"
+          justlogin: true
+      - run: |
+          git config user.name "akshanshkmr" && git config user.email "akshanshkmr821@gmail.com" 
+          git remote add heroku git@heroku.com:amizone-apiv2.git
+          git push heroku master
