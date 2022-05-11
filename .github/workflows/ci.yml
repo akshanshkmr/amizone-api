@@ -20,11 +20,9 @@ jobs:
       run: |
         pip install pytest
         pip install coverage
-        pip install pytest-json-report
-        coverage run -m pytest tests.py --json-report
+        coverage run -m pytest tests.py
         coverage json
         echo "COVERAGE=$(jq '.totals.percent_covered' coverage.json)" >> $GITHUB_ENV
-        echo "FAILED=$(jq '.summary.failed' .report.json)" >> $GITHUB_ENV
     - name: Update Coverage Badge
       if: always()
       uses: schneegans/dynamic-badges-action@v1.0.0
