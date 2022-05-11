@@ -35,16 +35,6 @@ jobs:
         label: Coverage (%)
         message: ${{ env.COVERAGE }}
         namedLogo: pytest
-    - name: Update Build Badge
-      if: always()
-      uses: schneegans/dynamic-badges-action@v1.0.0
-      with:
-        auth: ${{ secrets.GIST_SECRET }}
-        gistID: 866fa104d7f38f068a1e127ab7ae8150
-        filename: amizone_api_results.json
-        label: Build
-        message: ${{ env.FAILED == 'null' && 'Passing' || 'Failing' }}
-        color: ${{ env.FAILED == 'null' && 'green' || 'red' }}
 
   deploy:
     needs: [build]
@@ -58,6 +48,5 @@ jobs:
           heroku_email: "akshanshkmr821@gmail.com"
           justlogin: true
       - run: |
-          git config user.name "akshanshkmr" && git config user.email "akshanshkmr821@gmail.com" 
           git remote add heroku git@heroku.com:amizone-apiv2.git
           git push heroku master
