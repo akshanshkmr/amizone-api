@@ -44,3 +44,30 @@ jobs:
   #         heroku_api_key: ${{secrets.HEROKU_API_KEY}}
   #         heroku_app_name: "amizone-apiv2"
   #         heroku_email: "akshanshkmr821@gmail.com"
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Heroku login credentials
+        run: |
+          cat > ~/.netrc <<EOF
+            machine api.heroku.com
+              login akshanshkmr821@gmail.com
+              password $HEROKU_API_KEY
+            machine git.heroku.com
+              login akshanshkmr821@gmail.com
+              password $HEROKU_API_KEY
+          EOF
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_EMAIL: "akshanshkmr821@gmail.com"
+      - name: Add Heroku remote
+        run: heroku git:remote --app $HEROKU_APP_NAME
+        env:
+          HEROKU_APP_NAME: "amizone-apiv2"
+      - name: Push to Heroku
+        run: git push heroku master
