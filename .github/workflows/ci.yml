@@ -34,6 +34,15 @@ jobs:
         message: ${{ env.COVERAGE }}
         namedLogo: pytest
 
+  create-release-tag:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: juliansangillo/tag-version@v1  
+        with:  
+            production-branch: master
+            dev-branch: develop
+  
   # deploy:
   #   needs: [build]
   #   runs-on: ubuntu-latest
